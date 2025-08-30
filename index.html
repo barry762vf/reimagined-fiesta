@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Simple MySQL + PHP + HTML Test</title>
+  <title>Supabase Message Board</title>
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     form { margin-bottom: 20px; }
@@ -14,48 +15,65 @@
   </style>
 </head>
 <body>
-  <h2>Message Board</h2>
+  <h2>Message Board (Supabase)</h2>
 
   <form id="msgForm">
-    <input type="text" name="name" placeholder="Your Name" required>
-    <textarea name="message" placeholder="Your Message" required></textarea>
+    <input type="text" id="name" placeholder="Your Name" required>
+    <textarea id="message" placeholder="Your Message" required></textarea>
     <button type="submit">Send</button>
   </form>
 
   <div id="messages"></div>
 
   <script>
+    // 🔑 Replace with your Supabase credentials
+    const SUPABASE_URL = "https://YOUR_PROJECT_URL.supabase.co";
+    const SUPABASE_KEY = "YOUR_ANON_PUBLIC_KEY";
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
     const form = document.getElementById('msgForm');
     const messagesDiv = document.getElementById('messages');
 
-    // Fetch and show messages
-    function loadMessages() {
-      fetch('submit.php')
-        .then(res => res.json())
-        .then(data => {
-          messagesDiv.innerHTML = "";
-          data.forEach(m => {
-            messagesDiv.innerHTML += `
-              <div class="msg">
-                <strong>${m.name}</strong>: ${m.message} <br>
-                <small>${m.created_at}</small>
-              </div>`;
-          });
-        });
+    // Load messages
+    async function loadMessages() {
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      messagesDiv.innerHTML = "";
+      data.forEach(m => {
+        messagesDiv.innerHTML += `
+          <div class="msg">
+            <strong>${m.name}</strong>: ${m.message} <br>
+            <small>${m.created_at}</small>
+          </div>`;
+      });
     }
 
-    // Submit new message
-    form.addEventListener('submit', e => {
+    // Submit message
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formData = new FormData(form);
-      fetch('submit.php', { method: 'POST', body: formData })
-        .then(() => {
-          form.reset();
-          loadMessages();
-        });
+      const name = document.getElementById('name').value;
+      const message = document.getElementById('message').value;
+
+      const { error } = await supabase
+        .from('messages')
+        .insert([{ name, message }]);
+
+      if (error) {
+        console.error(error);
+      } else {
+        form.reset();
+        loadMessages();
+      }
     });
 
-    // Load messages initially
     loadMessages();
   </script>
 </body>
