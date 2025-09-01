@@ -1,82 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Supabase Message Board</title>
-  <script src="https://unpkg.com/@supabase/supabase-js"></script>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    form { margin-bottom: 20px; }
-    input, textarea { width: 100%; padding: 8px; margin: 5px 0; }
-    button { padding: 10px 15px; border: none; background: #28a745; color: white; cursor: pointer; }
-    button:hover { background: #218838; }
-    .msg { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-    .msg small { color: #555; }
-  </style>
+  <meta charset="utf-8"/>
+  <title>Do you want to date me?</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body>
-  <h2>Message Board (Supabase)</h2>
+<body class="d-flex align-items-center justify-content-center vh-100 bg-gradient">
+  <div class="text-center">
+    <h1 class="mb-4">Do you want to date me? 💖</h1>
+    <div id="btnWrap">
+      <a id="yesBtn" href="happy.html" class="btn btn-success btn-lg mx-3">Yes</a>
+      <button id="noBtn" class="btn btn-danger btn-lg mx-3">No</button>
+    </div>
+    <p id="sadMsg" class="mt-4 text-muted"></p>
+  </div>
 
-  <form id="msgForm">
-    <input type="text" id="name" placeholder="Your Name" required>
-    <textarea id="message" placeholder="Your Message" required></textarea>
-    <button type="submit">Send</button>
-  </form>
-
-  <div id="messages"></div>
-
-  <script>
-    // 🔑 Replace with your Supabase credentials
-    const SUPABASE_URL = "https://ikcmtjadlhgqmahekbns.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrY210amFkbGhncW1haGVrYm5zIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY1NTgyMDksImV4cCI6MjA3MjEzNDIwOX0.-62hVVxxXPTEVDl5MrTilFajlYF3RZGftIdQXLcBL3k";
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    const form = document.getElementById('msgForm');
-    const messagesDiv = document.getElementById('messages');
-
-    // Load messages
-    async function loadMessages() {
-      const { data, error } = await supabase
-        .from('messages')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      messagesDiv.innerHTML = "";
-      data.forEach(m => {
-        messagesDiv.innerHTML += `
-          <div class="msg">
-            <strong>${m.name}</strong>: ${m.message} <br>
-            <small>${m.created_at}</small>
-          </div>`;
-      });
-    }
-
-    // Submit message
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('name').value;
-      const message = document.getElementById('message').value;
-
-      const { error } = await supabase
-        .from('messages')
-        .insert([{ name, message }]);
-
-      if (error) {
-        console.error(error);
-      } else {
-        form.reset();
-        loadMessages();
-      }
-    });
-
-    loadMessages();
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
-
-
