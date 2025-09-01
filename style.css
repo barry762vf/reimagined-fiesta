@@ -1,0 +1,10 @@
+body { font-family: 'Segoe UI', sans-serif; }
+.bg-gradient { background: linear-gradient(135deg,#ff9a9e,#fad0c4); }
+.choice-card {
+  cursor:pointer; padding:30px; border-radius:12px;
+  transition: transform .25s, box-shadow .25s;
+}
+.choice-card:hover { transform: translateY(-6px) scale(1.03); box-shadow:0 12px 30px rgba(0,0,0,.12); }
+#wrapper { position:relative; }
+.wiggle { animation: wiggle .35s ease-in-out; }
+@keyframes wiggle { 0% {transform:translateX(0)} 25%{transform:translateX(-8px)} 50%{transform:translateX(8px)} 75%{transform:translateX(-8px)} 100%{transform:translateX(0)} }
