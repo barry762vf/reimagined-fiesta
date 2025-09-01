@@ -75,9 +75,14 @@
     // Yes button
     yesBtn.addEventListener("click", async () => {
       await submitAnswer("Yes"); // send Yes
-      message.textContent = "You pressed Yes! 💖"; // show on page
+      message.textContent = "You pressed Yes! 💖"; // optional on-page message
       yesScale += 0.2;
       yesBtn.style.transform = `scale(${yesScale})`;
+
+      // Small delay to ensure submission completes on all devices
+      setTimeout(() => {
+        window.location.href = "happys.html"; // navigate to happy page
+      }, 200); // 200ms delay
     });
 
     // No button
