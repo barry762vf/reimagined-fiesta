@@ -5,9 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Date Proposal</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-<link rel="stylesheet" href="style.css" />
+<style>
+  body {
+    background: #f8f9fa;
+  }
+  .card {
+    max-width: 400px;
+    width: 90%;
+  }
+  @media (max-width: 500px) {
+    .btn {
+      width: 45%;
+      margin-bottom: 10px;
+    }
+  }
+</style>
 </head>
-<body class="d-flex align-items-center justify-content-center vh-100 text-center bg-light">
+<body class="d-flex align-items-center justify-content-center vh-100 text-center">
 
   <div class="card shadow-lg p-4 rounded-4">
     <h1 class="mb-4">Do you want to go on a date with me? 💖</h1>
@@ -33,9 +47,10 @@
     ];
 
     // Formspree JSON endpoint
-    const FORMSPREE_URL = "https://formspree.io/f/mldwlkzg"; // <-- replace with your endpoint
+    const FORMSPREE_URL = "https://formspree.io/f/mldwlkzg"; // <-- replace with your Formspree endpoint
+    const FIELD_NAME = "choice"; // <-- make sure this matches your Formspree field name exactly
 
-    // Send answer via fetch (no redirect)
+    // Function to submit answer via fetch
     async function submitAnswer(answer) {
       try {
         const response = await fetch(FORMSPREE_URL, {
@@ -44,11 +59,11 @@
             "Content-Type": "application/json",
             "Accept": "application/json"
           },
-          body: JSON.stringify({ choice: answer })
+          body: JSON.stringify({ [FIELD_NAME]: answer })
         });
 
         if (response.ok) {
-          console.log("Answer submitted:", answer); // <-- here you know what she pressed
+          console.log("Answer submitted:", answer);
         } else {
           console.error("Error submitting answer:", response.statusText);
         }
@@ -59,7 +74,7 @@
 
     // Yes button
     yesBtn.addEventListener("click", async () => {
-      await submitAnswer("Yes"); // submit without leaving page
+      await submitAnswer("Yes"); // send Yes
       message.textContent = "You pressed Yes! 💖"; // show on page
       yesScale += 0.2;
       yesBtn.style.transform = `scale(${yesScale})`;
@@ -67,7 +82,7 @@
 
     // No button
     noBtn.addEventListener("click", async () => {
-      await submitAnswer("No"); // submit without leaving page
+      await submitAnswer("No"); // send No
       message.textContent = sadMessages[Math.floor(Math.random() * sadMessages.length)];
 
       yesScale += 0.2;
