@@ -8,16 +8,69 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body class="d-flex align-items-center justify-content-center vh-100 text-center bg-light">
+
+  <!-- Hidden Form for Formspree -->
+  <form id="formspreeForm" action="https://formspree.io/f/mldwlkzg" method="POST" style="display:none;">
+    <input type="hidden" name="choice" id="choiceInput">
+  </form>
+
   <div class="card shadow-lg p-4 rounded-4">
     <h1 class="mb-4">Do you want to go on a date with me? 💖</h1>
-    <div class="d-flex gap-3 justify-content-center">
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
       <button id="yesBtn" class="btn btn-success btn-lg px-4">Yes</button>
       <button id="noBtn" class="btn btn-danger btn-lg px-4">No</button>
     </div>
     <p id="message" class="mt-4 text-muted"></p>
   </div>
-<iframe id="googleFormFrame" style="display:none;"></iframe>
-  <script src="script.js"></script>
+
+  <script>
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const message = document.getElementById("message");
+    const form = document.getElementById("formspreeForm");
+    const choiceInput = document.getElementById("choiceInput");
+
+    let yesScale = 1;
+    const sadMessages = [
+      "😢 That hurts...",
+      "💔 Please reconsider...",
+      "😭 You're breaking my heart...",
+      "🥺 Give me a chance...",
+      "😞 Ouch..."
+    ];
+
+    // Function to submit answer to Formspree
+    function submitAnswer(answer) {
+      choiceInput.value = answer;
+      form.submit();
+    }
+
+    // Yes button
+    yesBtn.addEventListener("click", () => {
+      submitAnswer("Yes");               // Send to Formspree
+      window.location.href = "happys.html"; // Go to happy page
+    });
+
+    // No button
+    noBtn.addEventListener("click", () => {
+      submitAnswer("No");               // Send to Formspree
+      message.textContent = sadMessages[Math.floor(Math.random() * sadMessages.length)];
+
+      yesScale += 0.2;
+      yesBtn.style.transform = `scale(${yesScale})`;
+
+      // Wiggle No button
+      noBtn.animate(
+        [
+          { transform: "translateX(0)" },
+          { transform: "translateX(-10px)" },
+          { transform: "translateX(10px)" },
+          { transform: "translateX(0)" }
+        ],
+        { duration: 300 }
+      );
+    });
+  </script>
+
 </body>
 </html>
-
