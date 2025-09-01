@@ -9,11 +9,6 @@
 </head>
 <body class="d-flex align-items-center justify-content-center vh-100 text-center bg-light">
 
-  <!-- Hidden Form for Formspree -->
-  <form id="formspreeForm" action="https://formspree.io/f/mldwlkzg" method="POST" style="display:none;">
-    <input type="hidden" name="choice" id="choiceInput">
-  </form>
-
   <div class="card shadow-lg p-4 rounded-4">
     <h1 class="mb-4">Do you want to go on a date with me? 💖</h1>
     <div class="d-flex gap-3 justify-content-center flex-wrap">
@@ -27,8 +22,6 @@
     const yesBtn = document.getElementById("yesBtn");
     const noBtn = document.getElementById("noBtn");
     const message = document.getElementById("message");
-    const form = document.getElementById("formspreeForm");
-    const choiceInput = document.getElementById("choiceInput");
 
     let yesScale = 1;
     const sadMessages = [
@@ -39,21 +32,42 @@
       "😞 Ouch..."
     ];
 
-    // Function to submit answer to Formspree
-    function submitAnswer(answer) {
-      choiceInput.value = answer;
-      form.submit();
+    // Formspree JSON endpoint
+    const FORMSPREE_URL = "https://formspree.io/f/mldwlkzg"; // <-- replace with your endpoint
+
+    // Send answer via fetch (no redirect)
+    async function submitAnswer(answer) {
+      try {
+        const response = await fetch(FORMSPREE_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({ choice: answer })
+        });
+
+        if (response.ok) {
+          console.log("Answer submitted:", answer); // <-- here you know what she pressed
+        } else {
+          console.error("Error submitting answer:", response.statusText);
+        }
+      } catch (err) {
+        console.error("Network error:", err);
+      }
     }
 
     // Yes button
-    yesBtn.addEventListener("click", () => {
-      submitAnswer("Yes");               // Send to Formspree
-      window.location.href = "happys.html"; // Go to happy page
+    yesBtn.addEventListener("click", async () => {
+      await submitAnswer("Yes"); // submit without leaving page
+      message.textContent = "You pressed Yes! 💖"; // show on page
+      yesScale += 0.2;
+      yesBtn.style.transform = `scale(${yesScale})`;
     });
 
     // No button
-    noBtn.addEventListener("click", () => {
-      submitAnswer("No");               // Send to Formspree
+    noBtn.addEventListener("click", async () => {
+      await submitAnswer("No"); // submit without leaving page
       message.textContent = sadMessages[Math.floor(Math.random() * sadMessages.length)];
 
       yesScale += 0.2;
