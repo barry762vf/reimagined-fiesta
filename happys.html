@@ -31,12 +31,8 @@
     background: rgba(255,255,255,0.95);
     box-shadow: 0 0 30px rgba(0,0,0,0.2);
   }
-  .btn {
-    min-width: 100px;
-  }
-  @media (max-width:500px){
-    .btn { width: 45%; margin-bottom:10px; }
-  }
+  .btn { min-width: 100px; }
+  @media (max-width:500px){ .btn { width: 45%; margin-bottom:10px; } }
   #gifPopup {
     position: fixed;
     top:50%;
@@ -69,21 +65,24 @@
   const message = document.getElementById("message");
   const gifPopup = document.getElementById("gifPopup");
 
+  // Your Formspree endpoint here
   const FORMSPREE_URL = "https://formspree.io/f/mldwlkzg";
   const FIELD_NAME = "activity";
 
+  // Show GIF popup
   function showGif(url){
     gifPopup.src = url;
     gifPopup.classList.add("show");
     setTimeout(()=>{ gifPopup.classList.remove("show"); }, 2000);
   }
 
+  // Submit data to Formspree
   async function submitAnswer(answer){
     try {
       const res = await fetch(FORMSPREE_URL, {
-        method:"POST",
-        headers:{"Content-Type":"application/json","Accept":"application/json"},
-        body: JSON.stringify({[FIELD_NAME]:answer})
+        method: "POST",
+        headers: {"Content-Type":"application/json","Accept":"application/json"},
+        body: JSON.stringify({[FIELD_NAME]: answer})
       });
       if(res.ok) console.log("Submitted:", answer);
       else console.error("Submission error:", res.statusText);
@@ -95,16 +94,20 @@
   buttons.forEach(btn => {
     btn.addEventListener("click", async ()=>{
       const choice = btn.dataset.choice;
+      // Submit silently
       await submitAnswer(choice);
+
+      // Show message
       message.textContent = `You chose: ${choice}! 🎉`;
-      // Show different GIF per activity
+
+      // Show GIF per choice
       let gifUrl = "";
       if(choice==="Movie") gifUrl="https://media.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif";
       if(choice==="Ice Cream") gifUrl="https://media.giphy.com/media/3o6Zt8MgUuvSbkZYWc/giphy.gif";
       if(choice==="Picnic") gifUrl="https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif";
       showGif(gifUrl);
-      // Optional: Navigate to a “thank you” or next page
-      // setTimeout(()=>{ window.location.href="thankyou.html"; }, 2000);
+
+      // **No navigation**, stays on page so you see the message and GIF
     });
   });
 </script>
