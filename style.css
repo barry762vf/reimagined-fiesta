@@ -1,28 +1,38 @@
 body {
   font-family: "Poppins", sans-serif;
-  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  margin: 0;
+  background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
 }
 
 .card {
   max-width: 500px;
   width: 90%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-#yesBtn {
-  transition: all 0.3s ease;
+.choice-card {
+  padding: 30px;
+  border-radius: 20px;
+  background: #fff;
+  cursor: pointer;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-#noBtn {
-  transition: transform 0.2s ease, background 0.3s ease;
-  position: relative;
-}
-
-#noBtn:hover {
-  background: #c82333;
-  transform: scale(1.05);
+.choice-card:hover {
+  transform: translateY(-6px) scale(1.03);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.15);
 }
 
 /* Responsive text */
 h1 {
   font-size: clamp(1.5rem, 2vw + 1rem, 2.5rem);
+}
+
+p.lead {
+  font-size: clamp(1rem, 1.5vw + 0.5rem, 1.3rem);
+}
+
+.btn {
+  border-radius: 30px;
+  padding: 10px 25px;
 }
