@@ -8,7 +8,7 @@ if (yesBtn && noBtn) {
   const sadMessages = ["😢 That hurts...", "💔 Please reconsider...", "😭 You're breaking my heart...", "🥺 Give me a chance...", "😞 Ouch..."];
 
   yesBtn.addEventListener("click", () => {
-    window.location.href = "happy.html";
+    window.location.href = "happys.html";
   });
 
   noBtn.addEventListener("click", () => {
