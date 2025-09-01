@@ -6,7 +6,6 @@
 <title>Date Proposal</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 <style>
-  /* Animated Gradient Background */
   body {
     background: linear-gradient(270deg, #ff9a9e, #fad0c4, #a1c4fd, #c2e9fb);
     background-size: 800% 800%;
@@ -18,28 +17,25 @@
     margin: 0;
     overflow: hidden;
   }
-
   @keyframes gradientBG {
     0% {background-position:0% 50%;}
     50% {background-position:100% 50%;}
     100% {background-position:0% 50%;}
   }
-
   .card {
     max-width: 400px;
     width: 90%;
     position: relative;
     overflow: hidden;
+    background: rgba(255,255,255,0.9);
+    padding: 2rem;
+    border-radius: 2rem;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
   }
-
   @media (max-width: 500px) {
-    .btn {
-      width: 45%;
-      margin-bottom: 10px;
-    }
+    .btn { width: 45%; margin-bottom: 10px; }
   }
-
-  /* GIF popup style */
   #gifPopup {
     position: fixed;
     top: 50%;
@@ -49,97 +45,75 @@
     pointer-events: none;
     transition: transform 0.5s ease;
   }
-  #gifPopup.show {
-    transform: translate(-50%, -50%) scale(1);
-  }
+  #gifPopup.show { transform: translate(-50%, -50%) scale(1); }
 </style>
 </head>
 <body>
 
-  <!-- Hidden Form for Formspree -->
-  <form id="formspreeForm" action="https://formspree.io/f/mldwlkzg" method="POST" style="display:none;">
-    <input type="hidden" name="choice" id="choiceInput">
-  </form>
+<img id="gifPopup" src="" alt="popup gif" width="250" />
 
-  <!-- GIF Popup -->
-  <img id="gifPopup" src="" alt="popup gif" width="250" />
-
-  <div class="card shadow-lg p-4 rounded-4 text-center">
-    <h1 class="mb-4">Do you want to go on a date with me? 💖</h1>
-    <div class="d-flex gap-3 justify-content-center flex-wrap">
-      <button id="yesBtn" class="btn btn-success btn-lg px-4">Yes</button>
-      <button id="noBtn" class="btn btn-danger btn-lg px-4">No</button>
-    </div>
-    <p id="message" class="mt-4 text-muted"></p>
+<div class="card">
+  <h1 class="mb-4">Do you want to go on a date with me? 💖</h1>
+  <div class="d-flex gap-3 justify-content-center flex-wrap">
+    <button id="yesBtn" class="btn btn-success btn-lg px-4">Yes</button>
+    <button id="noBtn" class="btn btn-danger btn-lg px-4">No</button>
   </div>
+  <p id="message" class="mt-4 text-muted"></p>
+</div>
 
-  <script>
-    const yesBtn = document.getElementById("yesBtn");
-    const noBtn = document.getElementById("noBtn");
-    const message = document.getElementById("message");
-    const form = document.getElementById("formspreeForm");
-    const choiceInput = document.getElementById("choiceInput");
-    const gifPopup = document.getElementById("gifPopup");
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const message = document.getElementById("message");
+const gifPopup = document.getElementById("gifPopup");
 
-    let yesScale = 1;
-    const sadMessages = [
-      "😢 That hurts...",
-      "💔 Please reconsider...",
-      "😭 You're breaking my heart...",
-      "🥺 Give me a chance...",
-      "😞 Ouch..."
-    ];
+let yesScale = 1;
+const sadMessages = ["😢 That hurts...","💔 Please reconsider...","😭 You're breaking my heart...","🥺 Give me a chance...","😞 Ouch..."];
 
-    // Submit form programmatically
-    function submitAnswer(answer) {
-      choiceInput.value = answer;
-      form.submit();
-      console.log("Submitted:", answer);
-    }
+// Formspree endpoint and field
+const FORMSPREE_URL = "https://formspree.io/f/mldwlkzg";
+const FIELD_NAME = "choice";
 
-    // Function to show GIF
-    function showGif(url) {
-      gifPopup.src = url;
-      gifPopup.classList.add("show");
-      setTimeout(() => {
-        gifPopup.classList.remove("show");
-      }, 2000); // visible for 2 seconds
-    }
-
-    // Yes button
-    yesBtn.addEventListener("click", () => {
-      submitAnswer("Yes");
-      message.textContent = "You pressed Yes! 💖";
-      yesScale += 0.2;
-      yesBtn.style.transform = `scale(${yesScale})`;
-
-      showGif("https://media.giphy.com/media/111ebonMs90YLu/giphy.gif"); // happy GIF
-
-      setTimeout(() => {
-        window.location.href = "happys.html"; // navigate after short delay
-      }, 200);
+// Submit data using fetch
+async function submitAnswer(answer){
+  try {
+    const res = await fetch(FORMSPREE_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept":"application/json" },
+      body: JSON.stringify({ [FIELD_NAME]: answer })
     });
+    if(res.ok){ console.log("Submitted:", answer); }
+    else { console.error("Submission error:", res.statusText); }
+  } catch(err) { console.error("Network error:", err); }
+}
 
-    // No button
-    noBtn.addEventListener("click", () => {
-      submitAnswer("No");
-      message.textContent = sadMessages[Math.floor(Math.random() * sadMessages.length)];
-      yesScale += 0.2;
-      yesBtn.style.transform = `scale(${yesScale})`;
+// Show GIF popup
+function showGif(url){
+  gifPopup.src = url;
+  gifPopup.classList.add("show");
+  setTimeout(()=>{ gifPopup.classList.remove("show"); },2000);
+}
 
-      noBtn.animate(
-        [
-          { transform: "translateX(0)" },
-          { transform: "translateX(-10px)" },
-          { transform: "translateX(10px)" },
-          { transform: "translateX(0)" }
-        ],
-        { duration: 300 }
-      );
+// Yes button
+yesBtn.addEventListener("click", async () => {
+  await submitAnswer("Yes");
+  message.textContent = "You pressed Yes! 💖";
+  yesScale += 0.2;
+  yesBtn.style.transform = `scale(${yesScale})`;
+  showGif("https://media.giphy.com/media/111ebonMs90YLu/giphy.gif");
+  setTimeout(()=>{ window.location.href="happys.html"; },200);
+});
 
-      showGif("https://media.giphy.com/media/3o6ZsX4n5VqQb6UEaM/giphy.gif"); // sad GIF
-    });
-  </script>
+// No button
+noBtn.addEventListener("click", async () => {
+  await submitAnswer("No");
+  message.textContent = sadMessages[Math.floor(Math.random()*sadMessages.length)];
+  yesScale += 0.2;
+  yesBtn.style.transform = `scale(${yesScale})`;
+  noBtn.animate([{transform:"translateX(0)"},{transform:"translateX(-10px)"},{transform:"translateX(10px)"},{transform:"translateX(0)"}],{duration:300});
+  showGif("https://media.giphy.com/media/3o6ZsX4n5VqQb6UEaM/giphy.gif");
+});
+</script>
 
 </body>
 </html>
